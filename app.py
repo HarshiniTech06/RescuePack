@@ -382,9 +382,11 @@ def optimize():
 
         end_time = time.perf_counter()
 
-        brute_time_ms = (
+        # Convert seconds to microseconds
+        brute_time_us = (
             end_time - start_time
-        ) * 1000
+        ) * 1_000_000
+
 
         # ====================================
         # BRANCH AND BOUND
@@ -399,27 +401,30 @@ def optimize():
 
         end_time = time.perf_counter()
 
-        bb_time_ms = (
+        # Convert seconds to microseconds
+        bb_time_us = (
             end_time - start_time
-        ) * 1000
+        ) * 1_000_000
+
 
         # ====================================
         # ADD EXECUTION TIMES
         # ====================================
 
         brute_result[
-            "execution_time_ms"
+            "execution_time_us"
         ] = round(
-            brute_time_ms,
-            6
+            brute_time_us,
+            3
         )
 
         bb_result[
-            "execution_time_ms"
+            "execution_time_us"
         ] = round(
-            bb_time_ms,
-            6
+            bb_time_us,
+            3
         )
+
 
         # ====================================
         # TIME COMPLEXITY
@@ -432,6 +437,7 @@ def optimize():
         bb_result[
             "time_complexity"
         ] = "O(2^n) worst case"
+
 
         # ====================================
         # SEARCH REDUCTION
@@ -459,10 +465,12 @@ def optimize():
 
             search_reduction = 0
 
+
         search_reduction = round(
             search_reduction,
             2
         )
+
 
         # ====================================
         # CHECK SAME SOLUTION
@@ -474,6 +482,7 @@ def optimize():
             bb_result["best_value"]
         )
 
+
         # ====================================
         # REMAINING CAPACITY
         # ====================================
@@ -483,6 +492,7 @@ def optimize():
             brute_result["best_weight"],
             2
         )
+
 
         # ====================================
         # SAVE HISTORY
@@ -532,6 +542,7 @@ def optimize():
         cursor.close()
         connection.close()
 
+
         # ====================================
         # SEND RESULTS
         # ====================================
@@ -557,6 +568,7 @@ def optimize():
             }
 
         })
+
 
     # ====================================
     # ERROR HANDLING

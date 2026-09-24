@@ -315,9 +315,6 @@
 
         <div id="resources">
 
-            <!-- Resources are loaded automatically
-                 based on the selected scenario -->
-
         </div>
 
 
@@ -382,7 +379,7 @@
 
     <!-- =================================================
          RESULTS
-    ================================================== -->
+    ================================================= -->
 
     <section
         id="result"
@@ -784,7 +781,6 @@ function updateResourceCount() {
 
 function loadScenario() {
 
-
     const scenarioName =
         document.getElementById(
             "scenarioSelect"
@@ -800,31 +796,17 @@ function loadScenario() {
     }
 
 
-    /* -----------------------------------------------
-       UPDATE DESCRIPTION
-    ------------------------------------------------ */
-
     document.getElementById(
         "scenarioDescription"
     ).textContent =
         scenario.description;
 
 
-
-    /* -----------------------------------------------
-       UPDATE CAPACITY
-    ------------------------------------------------ */
-
     document.getElementById(
         "capacity"
     ).value =
         scenario.capacity;
 
-
-
-    /* -----------------------------------------------
-       CLEAR EXISTING RESOURCES
-    ------------------------------------------------ */
 
     const container =
         document.getElementById(
@@ -834,11 +816,6 @@ function loadScenario() {
 
     container.innerHTML = "";
 
-
-
-    /* -----------------------------------------------
-       LOAD SCENARIO RESOURCES
-    ------------------------------------------------ */
 
     scenario.items.forEach(
         item => {
@@ -852,11 +829,6 @@ function loadScenario() {
         }
     );
 
-
-
-    /* -----------------------------------------------
-       CLEAR OLD RESULTS
-    ------------------------------------------------ */
 
     document.getElementById(
         "result"
@@ -872,11 +844,6 @@ function loadScenario() {
 
 
 async function optimize() {
-
-
-    /* -----------------------------------------------
-       GET CAPACITY
-    ------------------------------------------------ */
 
     const capacity =
         parseFloat(
@@ -900,11 +867,6 @@ async function optimize() {
     }
 
 
-
-    /* -----------------------------------------------
-       GET SELECTED MISSION
-    ------------------------------------------------ */
-
     const scenarioSelect =
         document.getElementById(
             "scenarioSelect"
@@ -926,11 +888,6 @@ async function optimize() {
     }
 
 
-
-    /* -----------------------------------------------
-       GET RESOURCE ROWS
-    ------------------------------------------------ */
-
     const rows =
         document.querySelectorAll(
             ".resource-row"
@@ -948,17 +905,10 @@ async function optimize() {
     }
 
 
-
     const items = [];
 
 
-
-    /* -----------------------------------------------
-       READ RESOURCES
-    ------------------------------------------------ */
-
     for (const row of rows) {
-
 
         const name =
             row.querySelector(
@@ -982,7 +932,6 @@ async function optimize() {
             );
 
 
-
         if (!name) {
 
             alert(
@@ -992,7 +941,6 @@ async function optimize() {
             return;
 
         }
-
 
 
         if (
@@ -1009,7 +957,6 @@ async function optimize() {
         }
 
 
-
         if (
             isNaN(value) ||
             value < 0
@@ -1024,7 +971,6 @@ async function optimize() {
         }
 
 
-
         items.push({
 
             name: name,
@@ -1037,11 +983,6 @@ async function optimize() {
 
     }
 
-
-
-    /* -----------------------------------------------
-       SHOW LOADING
-    ------------------------------------------------ */
 
     const loading =
         document.getElementById(
@@ -1059,22 +1000,11 @@ async function optimize() {
     ).innerHTML = "";
 
 
-
-    /* -----------------------------------------------
-       START RESPONSE TIMER
-    ------------------------------------------------ */
-
-    const startTime =
-        performance.now();
-
-
+    /* ================================================
+       SEND DATA TO FLASK
+    ================================================= */
 
     try {
-
-
-        /* -------------------------------------------
-           SEND DATA TO FLASK
-        -------------------------------------------- */
 
         const response =
             await fetch(
@@ -1095,8 +1025,6 @@ async function optimize() {
                     body:
                         JSON.stringify({
 
-                            /* IMPORTANT:
-                               SEND MISSION */
                             mission:
                                 mission,
 
@@ -1111,11 +1039,6 @@ async function optimize() {
                 }
             );
 
-
-
-        /* -------------------------------------------
-           CHECK RESPONSE
-        -------------------------------------------- */
 
         if (!response.ok) {
 
@@ -1134,33 +1057,15 @@ async function optimize() {
         }
 
 
-
-        /* -------------------------------------------
-           GET RESULTS
-        -------------------------------------------- */
-
         const data =
             await response.json();
 
 
-        const endTime =
-            performance.now();
-
-
-        const responseTime =
-            endTime - startTime;
-
-
-
-        /* -------------------------------------------
+        /* =============================================
            DISPLAY RESULTS
-        -------------------------------------------- */
+        ============================================= */
 
-        displayResults(
-            data,
-            responseTime
-        );
-
+        displayResults(data);
 
     }
 
@@ -1197,11 +1102,7 @@ async function optimize() {
 ====================================================== */
 
 
-function displayResults(
-    data,
-    responseTime
-) {
-
+function displayResults(data) {
 
     const brute =
         data.brute_force;
@@ -1228,10 +1129,8 @@ function displayResults(
             (
 
                 (
-
                     brute.combinations_checked -
                     branch.nodes_explored
-
                 )
 
                 /
@@ -1339,10 +1238,6 @@ function displayResults(
     ).innerHTML = `
 
 
-        <!-- ==========================================
-             RESULTS HEADER
-        =========================================== -->
-
         <div class="results-header">
 
             <div>
@@ -1374,12 +1269,7 @@ function displayResults(
 
 
 
-        <!-- ==========================================
-             ALGORITHM CARDS
-        =========================================== -->
-
         <div class="algorithm-grid">
-
 
 
             <!-- ======================================
@@ -1506,15 +1396,21 @@ function displayResults(
 
 
 
+                <!-- =================================
+                     UPDATED EXECUTION TIME
+                ================================== -->
+
                 <div class="execution-time">
 
                     <span>
-                        Execution / Response Time
+                        Algorithm Execution Time
                     </span>
 
                     <strong>
 
-                        ${responseTime.toFixed(3)} ms
+                        ${formatExecutionTime(
+                            brute.execution_time_us
+                        )}
 
                     </strong>
 
@@ -1665,15 +1561,21 @@ function displayResults(
 
 
 
+                <!-- =================================
+                     UPDATED EXECUTION TIME
+                ================================== -->
+
                 <div class="execution-time">
 
                     <span>
-                        Execution / Response Time
+                        Algorithm Execution Time
                     </span>
 
                     <strong>
 
-                        ${responseTime.toFixed(3)} ms
+                        ${formatExecutionTime(
+                            branch.execution_time_us
+                        )}
 
                     </strong>
 
@@ -1955,9 +1857,13 @@ function displayResults(
                 Note:
             </strong>
 
-            Execution time shown here represents the
-            browser-to-server optimization response time.
-            It is different from theoretical time complexity.
+            Algorithm execution time represents the time
+            required by the Flask server to execute the
+            individual optimization algorithm.
+            It is measured separately for Brute Force and
+            Branch &amp; Bound using high-resolution timing.
+
+            This is different from theoretical time complexity.
             Time complexity describes how the algorithm's
             work grows as the number of resources increases.
 
@@ -1981,6 +1887,32 @@ function displayResults(
         block: "start"
 
     });
+
+}
+
+
+
+/* =====================================================
+   EXECUTION TIME FORMAT
+====================================================== */
+
+
+function formatExecutionTime(time) {
+
+    const value =
+        Number(time);
+
+
+    if (
+        isNaN(value)
+    ) {
+
+        return "N/A";
+
+    }
+
+
+    return value.toFixed(3) + " μs";
 
 }
 

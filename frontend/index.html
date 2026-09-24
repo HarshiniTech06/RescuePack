@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>RescuePack | Resource Optimization</title>
+
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+====================================================== -->
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-logo">
+            RP
+        </div>
+
+        <div class="brand-text">
+
+            <h1>RescuePack</h1>
+
+            <p>
+                Emergency Resource Optimization
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="system-status">
+
+        <span class="status-dot"></span>
+
+        <span>
+            Optimization Engine Ready
+        </span>
+
+    </div>
+
+</header>
+
+
+
+<!-- =====================================================
+     MAIN
+====================================================== -->
+
+<main class="main-container">
+
+
+    <!-- =================================================
+         HERO
+    ================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <p class="eyebrow">
+                RESOURCE PLANNING SYSTEM
+            </p>
+
+            <h2>
+                Optimize emergency resources under
+                limited capacity.
+            </h2>
+
+            <p class="hero-description">
+                Compare Exhaustive Search and Branch &amp; Bound
+                to identify the highest-priority resource
+                combination.
+            </p>
+
+        </div>
+
+
+        <div class="algorithm-badge">
+
+            <strong>0/1</strong>
+
+            <span>
+                Knapsack Optimization
+            </span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         MISSION SCENARIO
+    ================================================== -->
+
+    <section class="card scenario-card">
+
+        <div class="section-heading">
+
+            <p class="eyebrow">
+                MISSION CONFIGURATION
+            </p>
+
+            <h3>
+                Choose Emergency Scenario
+            </h3>
+
+            <p class="section-description">
+                Select a mission to automatically load suitable
+                emergency resources.
+            </p>
+
+        </div>
+
+
+        <div class="scenario-grid">
+
+
+            <!-- SCENARIO SELECT -->
+
+            <div class="scenario-option">
+
+                <label for="scenarioSelect">
+                    Mission Scenario
+                </label>
+
+                <select
+                    id="scenarioSelect"
+                    class="scenario-select"
+                >
+
+                    <option value="ambulance">
+                        Ambulance Mission
+                    </option>
+
+                    <option value="flood">
+                        Flood Rescue
+                    </option>
+
+                    <option value="earthquake">
+                        Earthquake Response
+                    </option>
+
+                    <option value="fire">
+                        Fire Rescue
+                    </option>
+
+                    <option value="medical">
+                        Remote Medical Camp
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- SCENARIO DESCRIPTION -->
+
+            <div class="scenario-info">
+
+                <span class="scenario-label">
+                    MISSION PURPOSE
+                </span>
+
+                <strong id="scenarioDescription">
+                    Emergency medical support for
+                    ambulance operations.
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         CAPACITY
+    ================================================== -->
+
+    <section class="card">
+
+        <div class="section-heading">
+
+            <p class="eyebrow">
+                CONFIGURATION
+            </p>
+
+            <h3>
+                Mission Capacity
+            </h3>
+
+        </div>
+
+
+        <div class="capacity-box">
+
+            <div class="capacity-icon">
+                KG
+            </div>
+
+
+            <div class="capacity-info">
+
+                <strong>
+                    Maximum Load Capacity
+                </strong>
+
+                <span>
+                    Define the maximum weight the
+                    emergency vehicle can carry.
+                </span>
+
+            </div>
+
+
+            <div class="capacity-input">
+
+                <input
+                    type="number"
+                    id="capacity"
+                    value="20"
+                    min="1"
+                    step="0.1"
+                >
+
+                <span>
+                    kg
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         RESOURCE INVENTORY
+    ================================================== -->
+
+    <section class="card">
+
+        <div class="resource-header">
+
+            <div>
+
+                <p class="eyebrow">
+                    RESOURCE INVENTORY
+                </p>
+
+                <h3>
+                    Emergency Resources
+                </h3>
+
+                <p class="section-description">
+                    Enter each resource's weight and
+                    operational priority.
+                </p>
+
+            </div>
+
+
+            <button
+                class="secondary-btn"
+                onclick="addResource()"
+            >
+                + Add Resource
+            </button>
+
+        </div>
+
+
+
+        <!-- TABLE HEADER -->
+
+        <div class="resource-table-header">
+
+            <span>
+                RESOURCE
+            </span>
+
+            <span>
+                WEIGHT
+            </span>
+
+            <span>
+                PRIORITY
+            </span>
+
+            <span></span>
+
+        </div>
+
+
+
+        <!-- RESOURCE CONTAINER -->
+
+        <div id="resources">
+
+            <!-- Resources are loaded automatically
+                 based on the selected scenario -->
+
+        </div>
+
+
+        <div class="inventory-footer">
+
+            <span id="resource-count">
+                0 resources configured
+            </span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         OPTIMIZE BUTTON
+    ================================================== -->
+
+    <button
+        class="optimize-button"
+        onclick="optimize()"
+    >
+
+        <span class="button-icon">
+            →
+        </span>
+
+        Run Optimization
+
+    </button>
+
+
+
+    <!-- =================================================
+         LOADING
+    ================================================== -->
+
+    <div
+        id="loading"
+        class="loading"
+    >
+
+        <div class="spinner"></div>
+
+        <div>
+
+            <strong>
+                Running optimization algorithms...
+            </strong>
+
+            <span>
+                Comparing Exhaustive Search and
+                Branch &amp; Bound
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         RESULTS
+    ================================================== -->
+
+    <section
+        id="result"
+        class="results-section"
+    >
+
+    </section>
+
+
+</main>
+
+
+
+<script>
+
+
+/* =====================================================
+   MISSION SCENARIOS
+====================================================== */
+
+
+const scenarios = {
+
+
+    /* =================================================
+       AMBULANCE
+    ================================================== */
+
+    ambulance: {
+
+        description:
+            "Emergency medical support for ambulance operations.",
+
+        capacity: 20,
+
+        items: [
+
+            {
+                name: "Oxygen Cylinder",
+                weight: 8,
+                value: 100
+            },
+
+            {
+                name: "Defibrillator",
+                weight: 6,
+                value: 95
+            },
+
+            {
+                name: "Emergency Medicines",
+                weight: 4,
+                value: 90
+            },
+
+            {
+                name: "First Aid Kit",
+                weight: 3,
+                value: 70
+            },
+
+            {
+                name: "PPE Kit",
+                weight: 2,
+                value: 40
+            }
+
+        ]
+
+    },
+
+
+    /* =================================================
+       FLOOD RESCUE
+    ================================================== */
+
+    flood: {
+
+        description:
+            "Essential supplies for flood rescue and emergency evacuation.",
+
+        capacity: 25,
+
+        items: [
+
+            {
+                name: "Drinking Water Pack",
+                weight: 6,
+                value: 90
+            },
+
+            {
+                name: "First Aid Kit",
+                weight: 3,
+                value: 85
+            },
+
+            {
+                name: "Life Jacket",
+                weight: 4,
+                value: 95
+            },
+
+            {
+                name: "Emergency Radio",
+                weight: 2,
+                value: 70
+            },
+
+            {
+                name: "Food Pack",
+                weight: 5,
+                value: 75
+            }
+
+        ]
+
+    },
+
+
+    /* =================================================
+       EARTHQUAKE RESPONSE
+    ================================================== */
+
+    earthquake: {
+
+        description:
+            "Emergency equipment for earthquake rescue operations.",
+
+        capacity: 30,
+
+        items: [
+
+            {
+                name: "Rescue Tool Kit",
+                weight: 8,
+                value: 100
+            },
+
+            {
+                name: "First Aid Kit",
+                weight: 4,
+                value: 90
+            },
+
+            {
+                name: "Portable Generator",
+                weight: 7,
+                value: 85
+            },
+
+            {
+                name: "Emergency Radio",
+                weight: 2,
+                value: 70
+            },
+
+            {
+                name: "Water Pack",
+                weight: 5,
+                value: 75
+            }
+
+        ]
+
+    },
+
+
+    /* =================================================
+       FIRE RESCUE
+    ================================================== */
+
+    fire: {
+
+        description:
+            "Critical equipment for fire rescue and emergency response.",
+
+        capacity: 25,
+
+        items: [
+
+            {
+                name: "Fire Safety Kit",
+                weight: 7,
+                value: 100
+            },
+
+            {
+                name: "Oxygen Cylinder",
+                weight: 8,
+                value: 95
+            },
+
+            {
+                name: "Protective Suit",
+                weight: 5,
+                value: 90
+            },
+
+            {
+                name: "First Aid Kit",
+                weight: 3,
+                value: 80
+            },
+
+            {
+                name: "Emergency Radio",
+                weight: 2,
+                value: 65
+            }
+
+        ]
+
+    },
+
+
+    /* =================================================
+       REMOTE MEDICAL CAMP
+    ================================================== */
+
+    medical: {
+
+        description:
+            "Medical resources for remote and temporary healthcare camps.",
+
+        capacity: 22,
+
+        items: [
+
+            {
+                name: "Medicine Box",
+                weight: 6,
+                value: 100
+            },
+
+            {
+                name: "Portable Oxygen",
+                weight: 5,
+                value: 95
+            },
+
+            {
+                name: "First Aid Kit",
+                weight: 3,
+                value: 85
+            },
+
+            {
+                name: "Diagnostic Kit",
+                weight: 4,
+                value: 80
+            },
+
+            {
+                name: "PPE Kit",
+                weight: 2,
+                value: 50
+            }
+
+        ]
+
+    }
+
+};
+
+
+
+/* =====================================================
+   ADD RESOURCE
+====================================================== */
+
+
+function addResource(
+    name = "",
+    weight = "",
+    value = ""
+) {
+
+    const container =
+        document.getElementById(
+            "resources"
+        );
+
+
+    const row =
+        document.createElement("div");
+
+
+    row.className =
+        "resource-row";
+
+
+    row.innerHTML = `
+
+        <input
+            type="text"
+            class="name"
+            value="${escapeHTML(name)}"
+            placeholder="Resource name"
+        >
+
+
+        <div class="input-unit">
+
+            <input
+                type="number"
+                class="weight"
+                value="${weight}"
+                min="0.1"
+                step="0.1"
+                placeholder="Weight"
+            >
+
+            <span>
+                kg
+            </span>
+
+        </div>
+
+
+        <input
+            type="number"
+            class="value"
+            value="${value}"
+            min="0"
+            step="1"
+            placeholder="Priority"
+        >
+
+
+        <button
+            class="delete-btn"
+            onclick="removeResource(this)"
+            title="Remove resource"
+        >
+            ×
+        </button>
+
+    `;
+
+
+    container.appendChild(row);
+
+
+    updateResourceCount();
+
+}
+
+
+
+/* =====================================================
+   REMOVE RESOURCE
+====================================================== */
+
+
+function removeResource(button) {
+
+    button.parentElement.remove();
+
+    updateResourceCount();
+
+}
+
+
+
+/* =====================================================
+   RESOURCE COUNT
+====================================================== */
+
+
+function updateResourceCount() {
+
+    const count =
+        document.querySelectorAll(
+            ".resource-row"
+        ).length;
+
+
+    document.getElementById(
+        "resource-count"
+    ).textContent =
+
+        count +
+
+        (
+            count === 1
+                ? " resource configured"
+                : " resources configured"
+        );
+
+}
+
+
+
+/* =====================================================
+   LOAD SCENARIO
+====================================================== */
+
+
+function loadScenario() {
+
+
+    const scenarioName =
+        document.getElementById(
+            "scenarioSelect"
+        ).value;
+
+
+    const scenario =
+        scenarios[scenarioName];
+
+
+    if (!scenario) {
+        return;
+    }
+
+
+    /* -----------------------------------------------
+       UPDATE DESCRIPTION
+    ------------------------------------------------ */
+
+    document.getElementById(
+        "scenarioDescription"
+    ).textContent =
+        scenario.description;
+
+
+
+    /* -----------------------------------------------
+       UPDATE CAPACITY
+    ------------------------------------------------ */
+
+    document.getElementById(
+        "capacity"
+    ).value =
+        scenario.capacity;
+
+
+
+    /* -----------------------------------------------
+       CLEAR EXISTING RESOURCES
+    ------------------------------------------------ */
+
+    const container =
+        document.getElementById(
+            "resources"
+        );
+
+
+    container.innerHTML = "";
+
+
+
+    /* -----------------------------------------------
+       LOAD SCENARIO RESOURCES
+    ------------------------------------------------ */
+
+    scenario.items.forEach(
+        item => {
+
+            addResource(
+                item.name,
+                item.weight,
+                item.value
+            );
+
+        }
+    );
+
+
+
+    /* -----------------------------------------------
+       CLEAR OLD RESULTS
+    ------------------------------------------------ */
+
+    document.getElementById(
+        "result"
+    ).innerHTML = "";
+
+}
+
+
+
+/* =====================================================
+   OPTIMIZATION
+====================================================== */
+
+
+async function optimize() {
+
+
+    /* -----------------------------------------------
+       GET CAPACITY
+    ------------------------------------------------ */
+
+    const capacity =
+        parseFloat(
+            document.getElementById(
+                "capacity"
+            ).value
+        );
+
+
+    if (
+        isNaN(capacity) ||
+        capacity <= 0
+    ) {
+
+        alert(
+            "Please enter a valid mission capacity."
+        );
+
+        return;
+
+    }
+
+
+
+    /* -----------------------------------------------
+       GET SELECTED MISSION
+    ------------------------------------------------ */
+
+    const scenarioSelect =
+        document.getElementById(
+            "scenarioSelect"
+        );
+
+
+    const mission =
+        scenarioSelect.value;
+
+
+    if (!mission) {
+
+        alert(
+            "Please select a mission scenario."
+        );
+
+        return;
+
+    }
+
+
+
+    /* -----------------------------------------------
+       GET RESOURCE ROWS
+    ------------------------------------------------ */
+
+    const rows =
+        document.querySelectorAll(
+            ".resource-row"
+        );
+
+
+    if (rows.length === 0) {
+
+        alert(
+            "Please add at least one resource."
+        );
+
+        return;
+
+    }
+
+
+
+    const items = [];
+
+
+
+    /* -----------------------------------------------
+       READ RESOURCES
+    ------------------------------------------------ */
+
+    for (const row of rows) {
+
+
+        const name =
+            row.querySelector(
+                ".name"
+            ).value.trim();
+
+
+        const weight =
+            parseFloat(
+                row.querySelector(
+                    ".weight"
+                ).value
+            );
+
+
+        const value =
+            parseFloat(
+                row.querySelector(
+                    ".value"
+                ).value
+            );
+
+
+
+        if (!name) {
+
+            alert(
+                "Please enter a resource name."
+            );
+
+            return;
+
+        }
+
+
+
+        if (
+            isNaN(weight) ||
+            weight <= 0
+        ) {
+
+            alert(
+                "Please enter a valid weight for every resource."
+            );
+
+            return;
+
+        }
+
+
+
+        if (
+            isNaN(value) ||
+            value < 0
+        ) {
+
+            alert(
+                "Please enter a valid priority for every resource."
+            );
+
+            return;
+
+        }
+
+
+
+        items.push({
+
+            name: name,
+
+            weight: weight,
+
+            value: value
+
+        });
+
+    }
+
+
+
+    /* -----------------------------------------------
+       SHOW LOADING
+    ------------------------------------------------ */
+
+    const loading =
+        document.getElementById(
+            "loading"
+        );
+
+
+    loading.classList.add(
+        "show"
+    );
+
+
+    document.getElementById(
+        "result"
+    ).innerHTML = "";
+
+
+
+    /* -----------------------------------------------
+       START RESPONSE TIMER
+    ------------------------------------------------ */
+
+    const startTime =
+        performance.now();
+
+
+
+    try {
+
+
+        /* -------------------------------------------
+           SEND DATA TO FLASK
+        -------------------------------------------- */
+
+        const response =
+            await fetch(
+                "/optimize",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    credentials: "include",
+
+                    body:
+                        JSON.stringify({
+
+                            /* IMPORTANT:
+                               SEND MISSION */
+                            mission:
+                                mission,
+
+                            capacity:
+                                capacity,
+
+                            items:
+                                items
+
+                        })
+
+                }
+            );
+
+
+
+        /* -------------------------------------------
+           CHECK RESPONSE
+        -------------------------------------------- */
+
+        if (!response.ok) {
+
+            const errorData =
+                await response.json()
+                    .catch(
+                        () => ({})
+                    );
+
+
+            throw new Error(
+                errorData.error ||
+                "Optimization request failed."
+            );
+
+        }
+
+
+
+        /* -------------------------------------------
+           GET RESULTS
+        -------------------------------------------- */
+
+        const data =
+            await response.json();
+
+
+        const endTime =
+            performance.now();
+
+
+        const responseTime =
+            endTime - startTime;
+
+
+
+        /* -------------------------------------------
+           DISPLAY RESULTS
+        -------------------------------------------- */
+
+        displayResults(
+            data,
+            responseTime
+        );
+
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            "Unable to run optimization.\n\n" +
+            error.message
+        );
+
+    }
+
+
+    finally {
+
+        loading.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   DISPLAY RESULTS
+====================================================== */
+
+
+function displayResults(
+    data,
+    responseTime
+) {
+
+
+    const brute =
+        data.brute_force;
+
+
+    const branch =
+        data.branch_bound;
+
+
+
+    /* =================================================
+       SEARCH EFFICIENCY
+    ================================================== */
+
+    let efficiency = 0;
+
+
+    if (
+        brute.combinations_checked > 0
+    ) {
+
+        efficiency =
+
+            (
+
+                (
+
+                    brute.combinations_checked -
+                    branch.nodes_explored
+
+                )
+
+                /
+
+                brute.combinations_checked
+
+            ) * 100;
+
+    }
+
+
+    efficiency =
+
+        Math.max(
+            0,
+            Math.min(
+                100,
+                efficiency
+            )
+        );
+
+
+    efficiency =
+        efficiency.toFixed(2);
+
+
+
+    /* =================================================
+       SELECTED ITEMS
+    ================================================== */
+
+    const bruteItems =
+
+        brute.best_items
+            .map(
+                item =>
+                    `<li>${escapeHTML(item)}</li>`
+            )
+            .join("");
+
+
+    const branchItems =
+
+        branch.best_items
+            .map(
+                item =>
+                    `<li>${escapeHTML(item)}</li>`
+            )
+            .join("");
+
+
+
+    /* =================================================
+       VERIFY SOLUTION
+    ================================================== */
+
+    const sameSolution =
+
+        Number(brute.best_value) ===
+        Number(branch.best_value);
+
+
+
+    /* =================================================
+       BRANCH PERCENTAGE
+    ================================================== */
+
+    let branchPercentage = 5;
+
+
+    if (
+        brute.combinations_checked > 0
+    ) {
+
+        branchPercentage =
+
+            (
+
+                branch.nodes_explored /
+                brute.combinations_checked
+
+            ) * 100;
+
+
+        branchPercentage =
+
+            Math.max(
+                5,
+                Math.min(
+                    100,
+                    branchPercentage
+                )
+            );
+
+    }
+
+
+
+    /* =================================================
+       RESULTS HTML
+    ================================================== */
+
+    document.getElementById(
+        "result"
+    ).innerHTML = `
+
+
+        <!-- ==========================================
+             RESULTS HEADER
+        =========================================== -->
+
+        <div class="results-header">
+
+            <div>
+
+                <p class="eyebrow">
+                    OPTIMIZATION RESULTS
+                </p>
+
+                <h2>
+                    Algorithm Comparison
+                </h2>
+
+            </div>
+
+
+            <div class="verification-badge">
+
+                <span class="status-dot"></span>
+
+                ${
+                    sameSolution
+                        ? "Optimal solution verified"
+                        : "Results require review"
+                }
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ==========================================
+             ALGORITHM CARDS
+        =========================================== -->
+
+        <div class="algorithm-grid">
+
+
+
+            <!-- ======================================
+                 BRUTE FORCE
+            ======================================= -->
+
+            <article class="algorithm-card">
+
+
+                <div class="algorithm-title">
+
+                    <div class="algorithm-icon brute-icon">
+                        BF
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Brute Force
+                        </h3>
+
+                        <span>
+                            Exhaustive Search
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="divider"></div>
+
+
+
+                <div class="selected-section">
+
+                    <p class="metric-label">
+                        SELECTED RESOURCES
+                    </p>
+
+                    <ul class="selected-list">
+
+                        ${bruteItems}
+
+                    </ul>
+
+                </div>
+
+
+
+                <div class="metrics-grid">
+
+
+                    <div class="metric">
+
+                        <span>
+                            Total Weight
+                        </span>
+
+                        <strong>
+
+                            ${formatNumber(
+                                brute.best_weight
+                            )} kg
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="metric">
+
+                        <span>
+                            Priority
+                        </span>
+
+                        <strong>
+
+                            ${formatNumber(
+                                brute.best_value
+                            )}
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="metric">
+
+                        <span>
+                            Combinations Checked
+                        </span>
+
+                        <strong>
+
+                            ${brute.combinations_checked}
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="metric">
+
+                        <span>
+                            Time Complexity
+                        </span>
+
+                        <strong class="complexity">
+
+                            O(2ⁿ)
+
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="execution-time">
+
+                    <span>
+                        Execution / Response Time
+                    </span>
+
+                    <strong>
+
+                        ${responseTime.toFixed(3)} ms
+
+                    </strong>
+
+                </div>
+
+
+            </article>
+
+
+
+            <!-- ======================================
+                 BRANCH AND BOUND
+            ======================================= -->
+
+            <article class="algorithm-card branch-card">
+
+
+                <div class="algorithm-title">
+
+                    <div class="algorithm-icon branch-icon">
+                        BB
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Branch &amp; Bound
+                        </h3>
+
+                        <span>
+                            Pruned Search
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="divider"></div>
+
+
+
+                <div class="selected-section">
+
+                    <p class="metric-label">
+                        SELECTED RESOURCES
+                    </p>
+
+                    <ul class="selected-list">
+
+                        ${branchItems}
+
+                    </ul>
+
+                </div>
+
+
+
+                <div class="metrics-grid">
+
+
+                    <div class="metric">
+
+                        <span>
+                            Total Weight
+                        </span>
+
+                        <strong>
+
+                            ${formatNumber(
+                                branch.best_weight
+                            )} kg
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="metric">
+
+                        <span>
+                            Priority
+                        </span>
+
+                        <strong>
+
+                            ${formatNumber(
+                                branch.best_value
+                            )}
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="metric">
+
+                        <span>
+                            Nodes Explored
+                        </span>
+
+                        <strong>
+
+                            ${branch.nodes_explored}
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="metric">
+
+                        <span>
+                            Time Complexity
+                        </span>
+
+                        <strong class="complexity">
+
+                            O(2ⁿ) worst case
+
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="pruned-box">
+
+                    <span>
+                        Branches Pruned
+                    </span>
+
+                    <strong>
+
+                        ${branch.branches_pruned}
+
+                    </strong>
+
+                </div>
+
+
+
+                <div class="execution-time">
+
+                    <span>
+                        Execution / Response Time
+                    </span>
+
+                    <strong>
+
+                        ${responseTime.toFixed(3)} ms
+
+                    </strong>
+
+                </div>
+
+
+            </article>
+
+
+        </div>
+
+
+
+        <!-- ==========================================
+             PERFORMANCE
+        =========================================== -->
+
+        <section class="performance-card">
+
+
+            <div class="performance-header">
+
+                <div>
+
+                    <p class="eyebrow">
+                        PERFORMANCE ANALYSIS
+                    </p>
+
+                    <h3>
+                        Search Efficiency
+                    </h3>
+
+                </div>
+
+
+                <div class="efficiency-value">
+
+                    <strong>
+                        ${efficiency}%
+                    </strong>
+
+                    <span>
+                        fewer search units
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- BRUTE FORCE BAR -->
+
+            <div class="bar-group">
+
+                <div class="bar-label">
+
+                    <span>
+                        Brute Force
+                    </span>
+
+                    <strong>
+                        ${brute.combinations_checked}
+                    </strong>
+
+                </div>
+
+
+                <div class="progress-track">
+
+                    <div
+                        class="progress brute-progress"
+                        style="width:100%"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- BRANCH BOUND BAR -->
+
+            <div class="bar-group">
+
+                <div class="bar-label">
+
+                    <span>
+                        Branch &amp; Bound
+                    </span>
+
+                    <strong>
+                        ${branch.nodes_explored}
+                    </strong>
+
+                </div>
+
+
+                <div class="progress-track">
+
+                    <div
+                        class="progress branch-progress"
+                        style="width:${branchPercentage}%"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="performance-note">
+
+                Branch &amp; Bound reduces the practical
+                search space by using an upper-bound estimate
+                to eliminate branches that cannot improve
+                the current best solution.
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ==========================================
+             COMPLEXITY
+        =========================================== -->
+
+        <section class="complexity-card">
+
+
+            <p class="eyebrow">
+                ALGORITHM COMPLEXITY
+            </p>
+
+            <h3>
+                Understanding the efficiency
+            </h3>
+
+
+
+            <div class="complexity-grid">
+
+
+                <div class="complexity-item">
+
+                    <span class="complexity-label">
+                        Brute Force
+                    </span>
+
+                    <strong>
+                        O(2ⁿ)
+                    </strong>
+
+                    <p>
+                        Checks every possible subset
+                        of resources.
+                    </p>
+
+                </div>
+
+
+
+                <div class="complexity-item">
+
+                    <span class="complexity-label">
+                        Branch &amp; Bound
+                    </span>
+
+                    <strong>
+                        O(2ⁿ) worst case
+                    </strong>
+
+                    <p>
+                        Uses bounds to prune branches
+                        that cannot produce a better
+                        solution.
+                    </p>
+
+                </div>
+
+
+
+                <div class="complexity-item">
+
+                    <span class="complexity-label">
+                        Current Search
+                    </span>
+
+                    <strong>
+
+                        ${branch.nodes_explored}
+                        /
+                        ${brute.combinations_checked}
+
+                    </strong>
+
+                    <p>
+                        Search units explored compared
+                        with exhaustive search.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ==========================================
+             VERIFICATION
+        =========================================== -->
+
+        <section class="verification-card">
+
+
+            <div class="verification-icon">
+                ✓
+            </div>
+
+
+            <div>
+
+                <p class="eyebrow">
+                    SOLUTION VERIFICATION
+                </p>
+
+
+                <h3>
+
+                    ${
+                        sameSolution
+                            ? "Same optimal solution"
+                            : "Solution comparison"
+                    }
+
+                </h3>
+
+
+                <p>
+
+                    Both algorithms identified an optimal
+                    priority value of
+
+                    <strong>
+
+                        ${formatNumber(
+                            brute.best_value
+                        )}
+
+                    </strong>.
+
+                    ${
+                        sameSolution
+                            ? " This confirms that both approaches produced the same optimal result."
+                            : " The results should be reviewed."
+                    }
+
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ==========================================
+             METHOD NOTE
+        =========================================== -->
+
+        <div class="method-note">
+
+            <strong>
+                Note:
+            </strong>
+
+            Execution time shown here represents the
+            browser-to-server optimization response time.
+            It is different from theoretical time complexity.
+            Time complexity describes how the algorithm's
+            work grows as the number of resources increases.
+
+        </div>
+
+
+    `;
+
+
+
+    /* =================================================
+       SCROLL TO RESULTS
+    ================================================== */
+
+    document.getElementById(
+        "result"
+    ).scrollIntoView({
+
+        behavior: "smooth",
+
+        block: "start"
+
+    });
+
+}
+
+
+
+/* =====================================================
+   NUMBER FORMAT
+====================================================== */
+
+
+function formatNumber(number) {
+
+    const value =
+        Number(number);
+
+
+    if (
+        Number.isInteger(value)
+    ) {
+
+        return value;
+
+    }
+
+
+    return value.toFixed(2);
+
+}
+
+
+
+/* =====================================================
+   HTML ESCAPE
+====================================================== */
+
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+
+    div.textContent =
+        text;
+
+
+    return div.innerHTML;
+
+}
+
+
+
+/* =====================================================
+   SCENARIO CHANGE
+====================================================== */
+
+
+document
+    .getElementById(
+        "scenarioSelect"
+    )
+    .addEventListener(
+        "change",
+        loadScenario
+    );
+
+
+
+/* =====================================================
+   INITIAL PAGE LOAD
+====================================================== */
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        loadScenario();
+
+    }
+);
+
+
+</script>
+
+
+</body>
+
+</html>

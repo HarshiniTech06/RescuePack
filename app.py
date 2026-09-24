@@ -16,7 +16,6 @@ from branch_bound import branch_and_bound_knapsack
 
 app = Flask(__name__)
 
-
 # ========================================
 # FLASK SESSION SECRET KEY
 # ========================================
@@ -42,13 +41,18 @@ FRONTEND_FOLDER = os.path.join(
 # ========================================
 
 def get_db_connection():
+
     connection = mysql.connector.connect(
         host=os.environ.get("MYSQLHOST", "localhost"),
         port=int(os.environ.get("MYSQLPORT", 3306)),
         user=os.environ.get("MYSQLUSER", "root"),
-        password=os.environ.get("MYSQLPASSWORD", "Harsh@2006"),
-        database=os.environ.get("MYSQLDATABASE", "rescuepack_db")
+        password=os.environ.get("MYSQLPASSWORD", ""),
+        database=os.environ.get(
+            "MYSQLDATABASE",
+            "rescuepack_db"
+        )
     )
+
     return connection
 
 
@@ -65,9 +69,7 @@ def test_db():
 
         cursor = connection.cursor()
 
-        cursor.execute(
-            "SELECT DATABASE()"
-        )
+        cursor.execute("SELECT DATABASE()")
 
         result = cursor.fetchone()
 
@@ -75,22 +77,14 @@ def test_db():
         connection.close()
 
         return jsonify({
-
-            "message":
-                "Database connection successful",
-
-            "database":
-                result[0]
-
+            "message": "Database connection successful",
+            "database": result[0]
         })
 
     except Exception as error:
 
         return jsonify({
-
-            "error":
-                str(error)
-
+            "error": str(error)
         }), 500
 
 
@@ -129,10 +123,7 @@ def test_users():
     except Exception as error:
 
         return jsonify({
-
-            "error":
-                str(error)
-
+            "error": str(error)
         }), 500
 
 
@@ -145,27 +136,14 @@ def login():
 
     try:
 
-        # ------------------------------------
-        # GET LOGIN DATA
-        # ------------------------------------
-
         data = request.get_json()
 
         if not data:
 
             return jsonify({
-
                 "success": False,
-
-                "message":
-                    "No login data received."
-
+                "message": "No login data received."
             }), 400
-
-
-        # ------------------------------------
-        # GET USERNAME AND PASSWORD
-        # ------------------------------------
 
         username = data.get(
             "username",
@@ -177,37 +155,19 @@ def login():
             ""
         )
 
-
-        # ------------------------------------
-        # CHECK EMPTY FIELDS
-        # ------------------------------------
-
         if username == "" or password == "":
 
             return jsonify({
-
                 "success": False,
-
                 "message":
                     "Username and password are required."
-
             }), 400
-
-
-        # ------------------------------------
-        # CONNECT TO DATABASE
-        # ------------------------------------
 
         connection = get_db_connection()
 
         cursor = connection.cursor(
             dictionary=True
         )
-
-
-        # ------------------------------------
-        # FIND USER
-        # ------------------------------------
 
         cursor.execute(
             """
@@ -226,74 +186,36 @@ def login():
         cursor.close()
         connection.close()
 
-
-        # ------------------------------------
-        # USER NOT FOUND
-        # ------------------------------------
-
         if user is None:
 
             return jsonify({
-
                 "success": False,
-
                 "message":
                     "Invalid username or password."
-
             }), 401
-
-
-        # ------------------------------------
-        # CHECK PASSWORD
-        # ------------------------------------
 
         if password != user["password_hash"]:
 
             return jsonify({
-
                 "success": False,
-
                 "message":
                     "Invalid username or password."
-
             }), 401
 
-
-        # ------------------------------------
-        # CREATE LOGIN SESSION
-        # ------------------------------------
-
         session["user_id"] = user["id"]
-
         session["username"] = user["username"]
 
-
-        # ------------------------------------
-        # LOGIN SUCCESS
-        # ------------------------------------
-
         return jsonify({
-
             "success": True,
-
-            "message":
-                "Login successful.",
-
-            "username":
-                user["username"]
-
+            "message": "Login successful.",
+            "username": user["username"]
         })
-
 
     except Exception as error:
 
         return jsonify({
-
             "success": False,
-
-            "message":
-                str(error)
-
+            "message": str(error)
         }), 500
 
 
@@ -307,22 +229,13 @@ def current_user():
     if "user_id" not in session:
 
         return jsonify({
-
             "logged_in": False
-
         })
 
-
     return jsonify({
-
         "logged_in": True,
-
-        "user_id":
-            session["user_id"],
-
-        "username":
-            session["username"]
-
+        "user_id": session["user_id"],
+        "username": session["username"]
     })
 
 
@@ -336,12 +249,8 @@ def logout():
     session.clear()
 
     return jsonify({
-
         "success": True,
-
-        "message":
-            "Logged out successfully."
-
+        "message": "Logged out successfully."
     })
 
 
@@ -364,6 +273,19 @@ def home():
 
 @app.route("/<path:filename>")
 def frontend_files(filename):
+
+    file_path = os.path.join(
+        FRONTEND_FOLDER,
+        filename
+    )
+
+    # Prevent invalid file access
+    if not os.path.isfile(file_path):
+
+        return jsonify({
+            "error": "File not found",
+            "file": filename
+        }), 404
 
     return send_from_directory(
         FRONTEND_FOLDER,
@@ -390,12 +312,9 @@ def optimize():
         if "user_id" not in session:
 
             return jsonify({
-
                 "error":
                     "Please login before using RescuePack."
-
             }), 401
-
 
         # ====================================
         # GET DATA FROM FRONTEND
@@ -406,19 +325,14 @@ def optimize():
         if not data:
 
             return jsonify({
-
-                "error":
-                    "No data received."
-
+                "error": "No data received."
             }), 400
-
 
         # ====================================
         # GET MISSION
         # ====================================
 
         mission = data["mission"]
-
 
         # ====================================
         # GET CAPACITY
@@ -427,7 +341,6 @@ def optimize():
         capacity = float(
             data["capacity"]
         )
-
 
         # ====================================
         # GET RESOURCES
@@ -438,15 +351,12 @@ def optimize():
         if not items:
 
             return jsonify({
-
                 "error":
                     "No resources provided."
-
             }), 400
 
-
         # ====================================
-        # CONVERT INPUT VALUES TO NUMBERS
+        # CONVERT VALUES
         # ====================================
 
         for item in items:
@@ -458,7 +368,6 @@ def optimize():
             item["value"] = float(
                 item["value"]
             )
-
 
         # ====================================
         # BRUTE FORCE
@@ -477,7 +386,6 @@ def optimize():
             end_time - start_time
         ) * 1000
 
-
         # ====================================
         # BRANCH AND BOUND
         # ====================================
@@ -494,7 +402,6 @@ def optimize():
         bb_time_ms = (
             end_time - start_time
         ) * 1000
-
 
         # ====================================
         # ADD EXECUTION TIMES
@@ -514,9 +421,8 @@ def optimize():
             6
         )
 
-
         # ====================================
-        # ADD TIME COMPLEXITY
+        # TIME COMPLEXITY
         # ====================================
 
         brute_result[
@@ -527,9 +433,8 @@ def optimize():
             "time_complexity"
         ] = "O(2^n) worst case"
 
-
         # ====================================
-        # CALCULATE SEARCH REDUCTION
+        # SEARCH REDUCTION
         # ====================================
 
         combinations = brute_result[
@@ -540,64 +445,47 @@ def optimize():
             "nodes_explored"
         ]
 
-
         if combinations > 0:
 
             search_reduction = (
-
                 (
                     combinations - nodes
                 )
-
                 /
-
                 combinations
-
             ) * 100
 
         else:
 
             search_reduction = 0
 
-
         search_reduction = round(
             search_reduction,
             2
         )
 
-
         # ====================================
-        # CHECK SAME OPTIMAL SOLUTION
+        # CHECK SAME SOLUTION
         # ====================================
 
         same_solution = (
-
             brute_result["best_value"]
-
             ==
-
             bb_result["best_value"]
-
         )
 
-
         # ====================================
-        # CALCULATE REMAINING CAPACITY
+        # REMAINING CAPACITY
         # ====================================
 
         remaining_capacity = round(
-
-            capacity
-            -
+            capacity -
             brute_result["best_weight"],
-
             2
-
         )
 
-
         # ====================================
-        # SAVE OPTIMIZATION HISTORY
+        # SAVE HISTORY
         # ====================================
 
         connection = get_db_connection()
@@ -626,25 +514,15 @@ def optimize():
             """,
             (
                 session["user_id"],
-
                 mission,
-
                 capacity,
-
                 brute_result["best_value"],
-
                 brute_result["best_weight"],
-
                 brute_result["combinations_checked"],
-
                 bb_result["best_value"],
-
                 bb_result["best_weight"],
-
                 bb_result["nodes_explored"],
-
                 bb_result["branches_pruned"],
-
                 search_reduction
             )
         )
@@ -654,9 +532,8 @@ def optimize():
         cursor.close()
         connection.close()
 
-
         # ====================================
-        # SEND RESULTS TO FRONTEND
+        # SEND RESULTS
         # ====================================
 
         return jsonify({
@@ -677,11 +554,9 @@ def optimize():
 
                 "remaining_capacity":
                     remaining_capacity
-
             }
 
         })
-
 
     # ====================================
     # ERROR HANDLING
@@ -690,30 +565,22 @@ def optimize():
     except KeyError as error:
 
         return jsonify({
-
             "error":
                 f"Missing required field: {error}"
-
         }), 400
-
 
     except ValueError:
 
         return jsonify({
-
             "error":
                 "Capacity, weight and value must be valid numbers."
-
         }), 400
-
 
     except Exception as error:
 
         return jsonify({
-
             "error":
                 str(error)
-
         }), 500
 
 
@@ -722,8 +589,14 @@ def optimize():
 # ========================================
 
 if __name__ == "__main__":
+
     app.run(
         host="0.0.0.0",
-        port=int(os.environ.get("PORT", 5000)),
+        port=int(
+            os.environ.get(
+                "PORT",
+                5000
+            )
+        ),
         debug=False
     )
